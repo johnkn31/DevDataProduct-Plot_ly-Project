@@ -1,0 +1,64 @@
+---
+title: "Plot_ly Project"
+author: "John Nguyen"
+date: "1/2/2021"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(quantmod)
+library(plotly)
+library(dplyr)
+```
+
+## MCD, WEN, and CMG Stock Adjusted Prices
+
+```{r, echo = FALSE, message=FALSE, warning=FALSE}
+##get MCD Information
+MCD<-getSymbols('MCD', src='yahoo',
+                   from='2000-01-01',
+                   to=Sys.Date(),
+                    auto.assign = FALSE)
+
+MCD<-data.frame(MCD$MCD.Adjusted)
+MCD$symbol<-'MCD'
+MCD<-cbind(timeframe=rownames(MCD),MCD)
+colnames(MCD)[2]<-'Adjusted.Price'
+MCD$timeframe<-as.Date(MCD$timeframe)
+
+##get Wendy Information
+WEN<-getSymbols('WEN', src='yahoo',
+                   from='2000-01-01',
+                   to=Sys.Date(),
+                    auto.assign = FALSE)
+
+WEN<-data.frame(WEN$WEN.Adjusted)
+WEN$symbol<-'WEN'
+WEN<-cbind(timeframe=rownames(WEN),WEN)
+colnames(WEN)[2]<-'Adjusted.Price'
+WEN$timeframe<-as.Date(WEN$timeframe)
+
+
+##get Chipotle Information
+CMG<-getSymbols('CMG', src='yahoo',
+                   from='2000-01-01',
+                   to=Sys.Date(),
+                    auto.assign = FALSE)
+
+CMG<-data.frame(CMG$CMG.Adjusted)
+CMG$symbol<-'CMG'
+CMG<-cbind(timeframe=rownames(CMG),CMG)
+colnames(CMG)[2]<-'Adjusted.Price'
+CMG$timeframe<-as.Date(CMG$timeframe)
+
+combine<-bind_rows(MCD,WEN,CMG)
+
+rownames(combine)<-1:nrow(combine)
+
+
+plot_ly(combine, x = ~timeframe, y = ~Adjusted.Price, color=~symbol, type = "scatter", mode = "lines")
+
+```
+
+## Thank You
